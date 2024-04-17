@@ -3,7 +3,7 @@ import 'package:bookme_mobile/repositories/auth_repository.dart';
 import 'package:bookme_mobile/utils/toast/toast.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:get/get.dart';
 
 class RegistrationFormController extends GetxController {
   TextEditingController email = TextEditingController();
@@ -11,8 +11,11 @@ class RegistrationFormController extends GetxController {
   TextEditingController lastname = TextEditingController();
   TextEditingController password = TextEditingController();
 
+  RxBool isLoading = false.obs;
 
-  Future<void> submit() async {
+
+  Future<bool> submit() async {
+    isLoading(true);
     try {
       if(validate()) {
         await authRepository.register(
@@ -23,12 +26,20 @@ class RegistrationFormController extends GetxController {
                 lastname: lastname.text
             )
         );
+        return true;
       }
     } on DioException catch (error) {
-      Toast.error("Incorrect email or password");
+      if(error.response?.statusCode == 400) {
+        Toast.error("Email must be an email format");
+      }
+      if(error.response?.statusCode == 500) {
+        Toast.error("Incorrect email or password");
+      }
     } catch (e) {
       Toast.error("Something went wrong...");
     }
+    isLoading(false);
+    return false;
   }
 
   bool validate() {

@@ -8,12 +8,12 @@ part 'timeslot_range_dto.g.dart';
 @JsonSerializable()
 class TimeslotRangeDto extends Equatable {
   const TimeslotRangeDto({
-    required this.day,
     required this.start,
-    required this.end
+    required this.end,
+    this.day,
   });
 
-  final String day;
+  final String? day;
 
   final TimeRangeItemDto start;
 
@@ -24,5 +24,5 @@ class TimeslotRangeDto extends Equatable {
   Map<String, dynamic> toJson() => _$TimeslotRangeDtoToJson(this);
 
   @override
-  List<Object> get props => [start.props, start.props, day];
+  List<Object> get props => [start.props, start.props];
 }

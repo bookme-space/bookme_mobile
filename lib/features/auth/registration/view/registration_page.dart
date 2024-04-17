@@ -14,13 +14,24 @@ class RegistrationPage extends StatefulWidget {
 
 class _RegistrationPageState extends State<RegistrationPage> {
 
+  RegistrationFormController formController = Get.put(RegistrationFormController());
+
   void handleRedirectToLoginPage (BuildContext context) =>
       context.go(RoutesKeys.login);
+
+  void handleRedirectToHome (BuildContext context) {
+    context.go(RoutesKeys.home);
+  }
+
+  void handleSubmit (BuildContext context) async {
+    final isSuccess = await formController.submit();
+    if(isSuccess) handleRedirectToHome(context);
+  }
 
   @override
   Widget build(BuildContext context) {
 
-    RegistrationFormController formController = Get.put(RegistrationFormController());
+
 
     return Scaffold(
         body: Container(
@@ -55,8 +66,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       SizedBox(
                         width: 200,
                         height: 50,
-                        child: ElevatedButton(
-                            onPressed: formController.submit,
+                        child: ElevatedButton.icon(
+                            onPressed: () => handleSubmit(context),
+                            icon: formController.isLoading.isTrue
+                                ? const CircularProgressIndicator(color: Colors.black)
+                                : const Icon(Icons.login, color: Colors.black,),
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(Colors.yellow),
                               shape: MaterialStateProperty.all(
@@ -65,7 +79,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                 ),
                               ),
                             ),
-                            child: const Text("Register", style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600, fontSize: 15))
+                            label: const Text("Register", style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600, fontSize: 15))
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -75,8 +89,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             onPressed: () => handleRedirectToLoginPage(context),
                             child: const Text("Login", style: TextStyle(fontSize: 18))
                         )
-                      ]
-                      )
+                      ])
                     ],
                   ),
                 )

@@ -9,10 +9,10 @@ part of 'seat_dto.dart';
 SeatDto _$SeatDtoFromJson(Map<String, dynamic> json) => SeatDto(
       id: json['id'] as String,
       name: json['name'] as String?,
-      capacity: json['capacity'] as String,
-      isBookedByMe: json['isBookedByMe'] as bool,
-      timeslots: (json['timeslots'] as List<dynamic>)
-          .map((e) => TimeslotRangeDto.fromJson(e as Map<String, dynamic>))
+      capacity: json['capacity'] as int,
+      isBookedByMe: json['isBookedByMe'] as bool?,
+      timeslots: (json['timeslots'] as List<dynamic>?)
+          ?.map((e) => TimeslotRangeDto.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 

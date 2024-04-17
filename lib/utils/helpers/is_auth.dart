@@ -8,7 +8,8 @@ class CheckAuthHelper {
 
   static Future<bool> get isAuth async {
     final dto = await _jwtProvider.getJwtTokenPair();
-    if(dto != null && !dto.hasExpired()) {
+
+    if(dto != null) {
       return true;
     }
     return false;

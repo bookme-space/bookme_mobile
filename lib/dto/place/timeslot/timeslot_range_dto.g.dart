@@ -8,9 +8,9 @@ part of 'timeslot_range_dto.dart';
 
 TimeslotRangeDto _$TimeslotRangeDtoFromJson(Map<String, dynamic> json) =>
     TimeslotRangeDto(
-      day: json['day'] as String,
       start: TimeRangeItemDto.fromJson(json['start'] as Map<String, dynamic>),
       end: TimeRangeItemDto.fromJson(json['end'] as Map<String, dynamic>),
+      day: json['day'] as String?,
     );
 
 Map<String, dynamic> _$TimeslotRangeDtoToJson(TimeslotRangeDto instance) =>

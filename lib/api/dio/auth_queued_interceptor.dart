@@ -39,8 +39,10 @@ class AuthQueuedInterceptor extends QueuedInterceptor {
       return handler.reject(error);
     }
 
+    print("!@@@@@@@@@@@@@@@@@@@@@@@@@@@@!#__${jwtTokenPair.hasExpired() == false}");
+
     // Проверка, истёк ли срок действия токена или нет.
-    if (jwtTokenPair.hasExpired() == false) {
+    if (jwtTokenPair.hasExpired() != false) {
       // Добавление access token в заголовок запроса.
       options.headers['Authorization'] = 'Bearer ${jwtTokenPair.accessToken}';
       return handler.next(options);
@@ -49,6 +51,7 @@ class AuthQueuedInterceptor extends QueuedInterceptor {
     // Обновление access token.
     final refreshedJwtTokenPair = await _getRefreshedJwtTokenPair();
 
+    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!#__${refreshedJwtTokenPair != null}");
     if (refreshedJwtTokenPair != null) {
       await _jwtTokenRepository.setJwtTokenPair(refreshedJwtTokenPair);
 
@@ -101,10 +104,10 @@ class AuthQueuedInterceptor extends QueuedInterceptor {
       if (jwtTokenPair == null) {
         return null;
       }
-
+      print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
       // Отправка запроса для обнавления access token.
       final response = await _dio.post<Map<String, dynamic>>(
-        '${appConfig.baseUrl}/token/refresh/',
+        '${appConfig.baseUrl}/auth/refresh',
         options: Options(
           headers: <String, dynamic>{
             'Authorization' : 'Bearer ${jwtTokenPair.accessToken}',
@@ -114,10 +117,12 @@ class AuthQueuedInterceptor extends QueuedInterceptor {
         data: {'refresh' : jwtTokenPair.refreshToken},
       );
 
-      final tokenData = TokenDataDto.fromJson(response.data!);
-      return JwtTokenPair.fromDto(dto: tokenData);
+      var tokenData = response.data!['tokenData'] as Map<String, dynamic>;
+      final dto = TokenDataDto.fromJson(tokenData);
+      return JwtTokenPair.fromDto(dto: dto);
     } on DioException catch (dioError) {
       if (dioError.response != null) {
+        print("@@@@@@@@@@@@@@@@@@@@@@@@@@");
         final statusCode = dioError.response!.statusCode;
         if (statusCode == 401 /*|| statusCode == 403*/) {
           await _performLogout();
@@ -131,6 +136,7 @@ class AuthQueuedInterceptor extends QueuedInterceptor {
       }
       return null;
     } catch (e) {
+      print("@@@@@@@@@@@@@@@@@@@@@@@@@@");
       return null;
     }
   }

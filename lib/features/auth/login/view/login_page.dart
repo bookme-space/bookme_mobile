@@ -14,13 +14,23 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
 
+  LoginFormController formController = Get.put(LoginFormController());
+
   void handleRedirectToRegisterPage (BuildContext context) =>
       context.go(RoutesKeys.registration);
 
+  void handleRedirectToHome (BuildContext context) {
+    context.go(RoutesKeys.home);
+  }
+
+  void handleSubmit (BuildContext context) async {
+    final isSuccess = await formController.submit();
+    print("ISSUCESSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS_______$isSuccess");
+    if(isSuccess) handleRedirectToRegisterPage(context);
+  }
+
   @override
   Widget build(BuildContext context) {
-
-    LoginFormController formController = Get.put(LoginFormController());
 
     return Scaffold(
       body: Container(
@@ -51,8 +61,11 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(
                     width: 200,
                     height: 50,
-                    child: ElevatedButton(
-                        onPressed: formController.submit,
+                    child: ElevatedButton.icon(
+                        onPressed: () => handleSubmit(context),
+                        icon: formController.isLoading.isTrue
+                            ? const CircularProgressIndicator(color: Colors.black)
+                            : const Icon(Icons.login,color: Colors.black),
                         style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all(Colors.yellow),
                             shape: MaterialStateProperty.all(
@@ -61,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                         ),
-                        child: const Text("Login", style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600, fontSize: 15))
+                        label: const Text("Login", style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600, fontSize: 15))
                     ),
                   ),
                   const SizedBox(height: 20),

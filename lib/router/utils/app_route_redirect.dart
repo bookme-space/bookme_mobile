@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 
 FutureOr<String?> appRouteRedirect(BuildContext context, GoRouterState state) async {
 
+
   final isAuth = await CheckAuthHelper.isAuth;
 
   if(

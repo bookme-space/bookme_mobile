@@ -12,8 +12,8 @@ class SeatDto extends Equatable {
     required this.id,
     required this.name,
     required this.capacity,
-    required this.isBookedByMe,
-    required this.timeslots
+    this.isBookedByMe,
+    this.timeslots
   });
 
 
@@ -21,16 +21,16 @@ class SeatDto extends Equatable {
 
   final String? name;
 
-  final String capacity;
+  final int capacity;
 
-  final bool isBookedByMe;
+  final bool? isBookedByMe;
 
-  final List<TimeslotRangeDto> timeslots;
+  final List<TimeslotRangeDto>? timeslots;
 
   factory SeatDto.fromJson(Map<String, dynamic> json) => _$SeatDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$SeatDtoToJson(this);
 
   @override
-  List<Object> get props => [id, timeslots.length];
+  List<Object> get props => [id, capacity];
 }
